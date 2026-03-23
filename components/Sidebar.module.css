@@ -1,0 +1,104 @@
+.sidebar {
+  width: 224px;
+  background: var(--white);
+  border-right: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.header {
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 3px;
+}
+.logoUt  { font-size: 20px; font-weight: 900; color: var(--teal); font-style: italic; }
+.logoSep { width: 1px; height: 22px; background: var(--gray-200); margin: 0 5px; }
+.logoBis { font-size: 15px; font-weight: 900; color: var(--green); letter-spacing: 1px; }
+.logoSub { font-size: 10px; color: var(--gray-400); }
+
+.nav {
+  padding: 10px 8px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 10px 8px 4px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 7px;
+  color: var(--gray-600);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+}
+.item:hover { background: var(--teal-light); color: var(--teal-dark); }
+.item.active { background: var(--teal-light); color: var(--teal-dark); font-weight: 600; }
+
+.icon { font-size: 15px; }
+
+.badge {
+  margin-left: auto;
+  background: var(--teal);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.footer {
+  padding: 10px 12px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.userChip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.userName { font-size: 12px; font-weight: 600; color: var(--gray-800); }
+.userRole { font-size: 10px; color: var(--gray-400); }

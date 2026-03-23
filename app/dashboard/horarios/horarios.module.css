@@ -1,0 +1,36 @@
+.grid {
+  display: grid;
+  grid-template-columns: 90px repeat(5, 1fr);
+  gap: 2px;
+  background: var(--gray-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.head {
+  background: var(--teal);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.time {
+  background: var(--gray-50);
+  font-size: 10px;
+  color: var(--gray-400);
+  font-weight: 500;
+  padding: 8px 4px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+}
+
+.cell {
+  background: var(--white);
+  padding: 6px;
+  min-height: 64px;
+}
