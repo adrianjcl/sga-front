@@ -36,6 +36,7 @@ export default function DocentesPage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          timeout: 5000,
         },
       );
 
