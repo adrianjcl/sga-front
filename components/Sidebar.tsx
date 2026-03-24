@@ -1,6 +1,8 @@
 'use client'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import axios from 'axios'
+import { authLogout } from '@/lib/api'
 import styles from './Sidebar.module.css'
 
 const navItems = [
@@ -18,6 +20,20 @@ const reportItems = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    try {
+      await authLogout()
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.warn("[logout] API error:", err.response?.status)
+      }
+    } finally {
+      localStorage.removeItem("token")
+      router.push("/login")
+    }
+  }
 
   const isActive = (href: string) =>
     href === '/dashboard' ? pathname === href : pathname.startsWith(href)
@@ -83,6 +99,23 @@ export default function Sidebar() {
             <p className={styles.userRole}>Coordinador</p>
           </div>
         </div>
+        <button
+          onClick={handleLogout}
+          style={{
+            marginTop: 8,
+            width: '100%',
+            padding: '7px 0',
+            background: 'transparent',
+            border: '1px solid var(--gray-300)',
+            borderRadius: 'var(--radius)',
+            fontSize: 12,
+            color: 'var(--gray-600)',
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+          }}
+        >
+          Cerrar sesión
+        </button>
       </div>
     </aside>
   )

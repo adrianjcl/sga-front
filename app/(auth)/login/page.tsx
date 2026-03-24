@@ -2,12 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { authLogin } from "@/lib/api";
 import styles from "./login.module.css";
-
-// const BASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-// const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-// const API_URL = BASE_URL + "/auth/v1/token?grant_type=password";
-const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,25 +18,13 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const { data } = await axios.post(
-        API_URL + "/auth/login",
-        { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      // data.access_token → JWT del usuario autenticado
-      // data.refresh_token → para renovar la sesión
-      // data.user → objeto con info del usuario (id, email, etc.)
-      localStorage.setItem("token", data.access_token);
+      const data = await authLogin(email, password);
+      console.log("[login] response:", data);
+      const token = data?.data?.session?.access_token;
+      localStorage.setItem("token", token);
       router.push("/dashboard");
-      console.log(data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // error.response?.status → 400 credenciales inválidas, 422 email mal formado
         const msg =
           error.response?.data?.error_description || "Credenciales incorrectas";
         setError(msg);
