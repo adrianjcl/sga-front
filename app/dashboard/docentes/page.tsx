@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 interface Docente {
   nomina: number;
   nombres: string;
@@ -12,7 +14,6 @@ interface Docente {
 
 export default function DocentesPage() {
   const [docentes, setDocentes] = useState<Docente[]>([]);
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -29,9 +30,8 @@ export default function DocentesPage() {
 
       // Llama al proxy local → sin CORS
       // El proxy (route.ts) se encarga de hablar con Supabase desde el servidor
-      const { data } = await axios.post<Docente[]>(
-        "/api/docentes",
-        {},
+      const { data } = await axios.get(
+        API_URL + "/docente/get",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -39,8 +39,9 @@ export default function DocentesPage() {
         },
       );
 
-      // route.ts ya extrajo data.data.Docentes → aquí llega el array limpio
-      setDocentes(data);
+      console.log("API response:", data);
+      const list = Array.isArray(data) ? data : data?.data?.Docentes ?? data?.Docentes ?? [];
+      setDocentes(list);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(
@@ -53,14 +54,6 @@ export default function DocentesPage() {
       setLoading(false);
     }
   };
-
-  const filtered = docentes.filter(
-    (d) =>
-      `${d.nombres} ${d.apellidos}`
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      d.correo.toLowerCase().includes(search.toLowerCase()),
-  );
 
   return (
     <>
@@ -82,12 +75,6 @@ export default function DocentesPage() {
         <div className="table-card">
           <div className="table-header">
             <span className="table-title">Lista de docentes</span>
-            <input
-              className="search-input"
-              placeholder="🔍 Buscar docente..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
           </div>
 
           {error && (
@@ -112,7 +99,7 @@ export default function DocentesPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.length === 0 ? (
+                {docentes.length === 0 ? (
                   <tr>
                     <td
                       colSpan={5}
@@ -122,7 +109,7 @@ export default function DocentesPage() {
                     </td>
                   </tr>
                 ) : (
-                  filtered.map((d) => (
+                  docentes.map((d) => (
                     <tr key={d.nomina}>
                       <td>{d.nomina}</td>
                       <td>
@@ -149,7 +136,7 @@ export default function DocentesPage() {
 
           <div className="pagination">
             <span>
-              Mostrando {filtered.length} de {docentes.length} docentes
+              Mostrando {docentes.length} de {docentes.length} docentes
             </span>
           </div>
         </div>

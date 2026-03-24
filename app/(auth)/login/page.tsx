@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import styles from "./login.module.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// const BASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+// const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// const API_URL = BASE_URL + "/auth/v1/token?grant_type=password";
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,11 +23,10 @@ export default function LoginPage() {
 
     try {
       const { data } = await axios.post(
-        BASE_URL + "/auth/v1/token?grant_type=password",
+        API_URL + "/auth/login",
         { email, password },
         {
           headers: {
-            apikey: ANON_KEY,
             "Content-Type": "application/json",
           },
         },
