@@ -1,42 +1,37 @@
-'use client'
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import axios from 'axios'
-import { authLogout } from '@/lib/api'
-import styles from './Sidebar.module.css'
+"use client";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import axios from "axios";
+import { authLogout } from "@/lib/api";
+import styles from "./Sidebar.module.css";
 
 const navItems = [
-  { href: '/dashboard',          icon: '📊', label: 'Dashboard' },
-  { href: '/dashboard/grupos',   icon: '👥', label: 'Grupos',   badge: '12' },
-  { href: '/dashboard/alumnos',  icon: '🎓', label: 'Alumnos' },
-  { href: '/dashboard/docentes', icon: '👩‍🏫', label: 'Docentes' },
-  { href: '/dashboard/horarios', icon: '🕐', label: 'Horarios' },
-]
-
-const reportItems = [
-  { href: '/dashboard/reportes', icon: '📄', label: 'Exportar datos' },
-  { href: '/dashboard/bajas',    icon: '📉', label: 'Bajas' },
-]
+  { href: "/dashboard", icon: "📊", label: "Dashboard" },
+  { href: "/dashboard/grupos", icon: "👥", label: "Grupos", badge: "12" },
+  { href: "/dashboard/alumnos", icon: "🎓", label: "Alumnos" },
+  { href: "/dashboard/docentes", icon: "👩‍🏫", label: "Docentes" },
+  { href: "/dashboard/horarios", icon: "🕐", label: "Horarios" },
+];
 
 export default function Sidebar() {
-  const pathname = usePathname()
-  const router = useRouter()
+  const pathname = usePathname();
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      await authLogout()
+      await authLogout();
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.warn("[logout] API error:", err.response?.status)
+        console.warn("[logout] API error:", err.response?.status);
       }
     } finally {
-      localStorage.removeItem("token")
-      router.push("/login")
+      localStorage.removeItem("token");
+      router.push("/login");
     }
-  }
+  };
 
   const isActive = (href: string) =>
-    href === '/dashboard' ? pathname === href : pathname.startsWith(href)
+    href === "/dashboard" ? pathname === href : pathname.startsWith(href);
 
   return (
     <aside className={styles.sidebar}>
@@ -53,11 +48,11 @@ export default function Sidebar() {
       {/* Nav */}
       <nav className={styles.nav}>
         <span className={styles.section}>Principal</span>
-        {navItems.slice(0, 1).map(item => (
+        {navItems.slice(0, 1).map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`${styles.item} ${isActive(item.href) ? styles.active : ''}`}
+            className={`${styles.item} ${isActive(item.href) ? styles.active : ""}`}
           >
             <span className={styles.icon}>{item.icon}</span>
             {item.label}
@@ -65,27 +60,15 @@ export default function Sidebar() {
         ))}
 
         <span className={styles.section}>Gestión</span>
-        {navItems.slice(1).map(item => (
+        {navItems.slice(1).map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`${styles.item} ${isActive(item.href) ? styles.active : ''}`}
+            className={`${styles.item} ${isActive(item.href) ? styles.active : ""}`}
           >
             <span className={styles.icon}>{item.icon}</span>
             {item.label}
             {item.badge && <span className={styles.badge}>{item.badge}</span>}
-          </Link>
-        ))}
-
-        <span className={styles.section}>Reportes</span>
-        {reportItems.map(item => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`${styles.item} ${isActive(item.href) ? styles.active : ''}`}
-          >
-            <span className={styles.icon}>{item.icon}</span>
-            {item.label}
           </Link>
         ))}
       </nav>
@@ -103,20 +86,20 @@ export default function Sidebar() {
           onClick={handleLogout}
           style={{
             marginTop: 8,
-            width: '100%',
-            padding: '7px 0',
-            background: 'transparent',
-            border: '1px solid var(--gray-300)',
-            borderRadius: 'var(--radius)',
+            width: "100%",
+            padding: "7px 0",
+            background: "transparent",
+            border: "1px solid var(--gray-300)",
+            borderRadius: "var(--radius)",
             fontSize: 12,
-            color: 'var(--gray-600)',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
+            color: "var(--gray-600)",
+            cursor: "pointer",
+            fontFamily: "inherit",
           }}
         >
           Cerrar sesión
         </button>
       </div>
     </aside>
-  )
+  );
 }

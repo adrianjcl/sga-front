@@ -32,6 +32,7 @@ interface HorarioEntry {
   materia: { nombre: string };
   inicio: string;
   fin: string;
+  dia: string;
 }
 
 interface AlumnoDetail {
@@ -45,7 +46,9 @@ export default function AlumnosPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
-  const [selectedDetail, setSelectedDetail] = useState<AlumnoDetail | null>(null);
+  const [selectedDetail, setSelectedDetail] = useState<AlumnoDetail | null>(
+    null,
+  );
   const [detailLoading, setDetailLoading] = useState(false);
   const [openMatricula, setOpenMatricula] = useState<number | null>(null);
 
@@ -55,7 +58,10 @@ export default function AlumnosPage() {
     fetchAlumnos();
   }, []);
 
-  const fetchAlumnos = async (query?: { nombre?: string; matricula?: string | number }) => {
+  const fetchAlumnos = async (query?: {
+    nombre?: string;
+    matricula?: string | number;
+  }) => {
     setLoading(true);
     setError("");
     try {
@@ -65,7 +71,9 @@ export default function AlumnosPage() {
       setAlumnos(list);
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setError(`Error ${err.response?.status ?? ""}: ${err.response?.data?.error ?? "No se pudo cargar la lista"}`);
+        setError(
+          `Error ${err.response?.status ?? ""}: ${err.response?.data?.error ?? "No se pudo cargar la lista"}`,
+        );
       } else {
         setError("Error inesperado al cargar alumnos");
       }
@@ -104,11 +112,22 @@ export default function AlumnosPage() {
         horarioGetByAlumno(matricula),
       ]);
 
-      const alumnoData = alumnoRes.status === "fulfilled" ? alumnoRes.value?.data?.alumno : null;
-      const califs: Calificacion[] = califRes.status === "fulfilled" ? califRes.value?.data?.calificaciones ?? [] : [];
-      const horario: HorarioEntry[] = horarioRes.status === "fulfilled" ? horarioRes.value?.data?.horario ?? [] : [];
+      const alumnoData =
+        alumnoRes.status === "fulfilled" ? alumnoRes.value?.data?.alumno : null;
+      const califs: Calificacion[] =
+        califRes.status === "fulfilled"
+          ? (califRes.value?.data?.calificaciones ?? [])
+          : [];
+      const horario: HorarioEntry[] =
+        horarioRes.status === "fulfilled"
+          ? (horarioRes.value?.data?.horario ?? [])
+          : [];
 
-      setSelectedDetail({ alumno: alumnoData, calificaciones: califs, horario });
+      setSelectedDetail({
+        alumno: alumnoData,
+        calificaciones: califs,
+        horario,
+      });
     } catch (err) {
       console.error("[alumnos] detail fetch error", err);
     } finally {
@@ -152,7 +171,8 @@ export default function AlumnosPage() {
 
           {error && (
             <div style={{ padding: "1rem", color: "red" }}>
-              {error} — <button onClick={() => fetchAlumnos()}>Reintentar</button>
+              {error} —{" "}
+              <button onClick={() => fetchAlumnos()}>Reintentar</button>
             </div>
           )}
 
@@ -176,7 +196,10 @@ export default function AlumnosPage() {
               <tbody>
                 {alumnos.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: "2rem" }}>
+                    <td
+                      colSpan={7}
+                      style={{ textAlign: "center", padding: "2rem" }}
+                    >
                       No se encontraron alumnos
                     </td>
                   </tr>
@@ -196,7 +219,9 @@ export default function AlumnosPage() {
                         <td>{a.grupo_nom ?? "—"}</td>
                         <td>
                           {a.estado ? (
-                            <span className={`badge ${estadoBadgeClass(a.estado)}`}>
+                            <span
+                              className={`badge ${estadoBadgeClass(a.estado)}`}
+                            >
                               {a.estado}
                             </span>
                           ) : (
@@ -220,34 +245,75 @@ export default function AlumnosPage() {
                       </tr>
                       {openMatricula === a.matricula && (
                         <tr key={`detail-${a.matricula}`}>
-                          <td colSpan={7} style={{ background: "var(--gray-50)", padding: "1rem 1.5rem" }}>
+                          <td
+                            colSpan={7}
+                            style={{
+                              background: "var(--gray-50)",
+                              padding: "1rem 1.5rem",
+                            }}
+                          >
                             {detailLoading ? (
-                              <p style={{ fontSize: 13 }}>Cargando detalle...</p>
+                              <p style={{ fontSize: 13 }}>
+                                Cargando detalle...
+                              </p>
                             ) : selectedDetail ? (
-                              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, fontSize: 13 }}>
+                              <div
+                                style={{
+                                  display: "grid",
+                                  gridTemplateColumns: "1fr 1fr",
+                                  gap: 16,
+                                  fontSize: 13,
+                                }}
+                              >
                                 <div>
                                   <strong>Calificaciones</strong>
-                                  {selectedDetail.calificaciones.length === 0 ? (
-                                    <p style={{ color: "var(--gray-500)" }}>Sin calificaciones</p>
+                                  {selectedDetail.calificaciones.length ===
+                                  0 ? (
+                                    <p style={{ color: "var(--gray-500)" }}>
+                                      Sin calificaciones
+                                    </p>
                                   ) : (
-                                    <table style={{ width: "100%", marginTop: 8 }}>
+                                    <table
+                                      style={{ width: "100%", marginTop: 8 }}
+                                    >
                                       <thead>
                                         <tr>
-                                          <th style={{ textAlign: "left", fontWeight: 600 }}>Materia</th>
+                                          <th
+                                            style={{
+                                              textAlign: "left",
+                                              fontWeight: 600,
+                                            }}
+                                          >
+                                            Materia
+                                          </th>
                                           <th>Unidad</th>
                                           <th>Calificación</th>
                                           <th>Acreditado</th>
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {selectedDetail.calificaciones.map((c, i) => (
-                                          <tr key={i}>
-                                            <td>{c.materia.nombre}</td>
-                                            <td style={{ textAlign: "center" }}>{c.unidad}</td>
-                                            <td style={{ textAlign: "center" }}>{c.calificacion}</td>
-                                            <td style={{ textAlign: "center" }}>{c.acreditado ? "✅" : "❌"}</td>
-                                          </tr>
-                                        ))}
+                                        {selectedDetail.calificaciones.map(
+                                          (c, i) => (
+                                            <tr key={i}>
+                                              <td>{c.materia.nombre}</td>
+                                              <td
+                                                style={{ textAlign: "center" }}
+                                              >
+                                                {c.unidad}
+                                              </td>
+                                              <td
+                                                style={{ textAlign: "center" }}
+                                              >
+                                                {c.calificacion}
+                                              </td>
+                                              <td
+                                                style={{ textAlign: "center" }}
+                                              >
+                                                {c.acreditado ? "✅" : "❌"}
+                                              </td>
+                                            </tr>
+                                          ),
+                                        )}
                                       </tbody>
                                     </table>
                                   )}
@@ -255,18 +321,24 @@ export default function AlumnosPage() {
                                 <div>
                                   <strong>Horario</strong>
                                   {selectedDetail.horario.length === 0 ? (
-                                    <p style={{ color: "var(--gray-500)" }}>Sin horario</p>
+                                    <p style={{ color: "var(--gray-500)" }}>
+                                      Sin horario
+                                    </p>
                                   ) : (
-                                    <ul style={{ marginTop: 8, paddingLeft: 0, listStyle: "none" }}>
+                                    <ul
+                                      style={{
+                                        marginTop: 8,
+                                        paddingLeft: 0,
+                                        listStyle: "none",
+                                      }}
+                                    >
                                       {selectedDetail.horario.map((h, i) => (
                                         <li key={i} style={{ marginBottom: 4 }}>
                                           <strong>{h.materia.nombre}</strong>
                                           {" — "}
-                                          {new Date(h.inicio).toLocaleDateString("es-MX", { weekday: "long" })}
-                                          {" "}
-                                          {new Date(h.inicio).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })}
+                                          {h.inicio} {h.fin}
                                           {" – "}
-                                          {new Date(h.fin).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })}
+                                          {h.dia}
                                         </li>
                                       ))}
                                     </ul>

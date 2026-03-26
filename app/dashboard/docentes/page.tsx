@@ -22,6 +22,7 @@ interface HorarioEntry {
   materia: { nombre: string };
   inicio: string;
   fin: string;
+  dia: string;
 }
 
 interface DocenteStats {
@@ -431,25 +432,9 @@ export default function DocentesPage() {
                                         <li key={i} style={{ marginBottom: 4 }}>
                                           <strong>{h.materia.nombre}</strong>
                                           {" — "}
-                                          {new Date(
-                                            h.inicio,
-                                          ).toLocaleDateString("es-MX", {
-                                            weekday: "long",
-                                          })}{" "}
-                                          {new Date(
-                                            h.inicio,
-                                          ).toLocaleTimeString("es-MX", {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                          })}
+                                          {h.inicio} {h.fin}
                                           {" – "}
-                                          {new Date(h.fin).toLocaleTimeString(
-                                            "es-MX",
-                                            {
-                                              hour: "2-digit",
-                                              minute: "2-digit",
-                                            },
-                                          )}
+                                          {h.dia}
                                         </li>
                                       ))}
                                     </ul>

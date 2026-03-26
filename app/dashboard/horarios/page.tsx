@@ -13,24 +13,11 @@ interface Grupo {
 
 interface HorarioEntry {
   materia: { nombre: string };
+  dia: string;
   inicio: string;
   fin: string;
 }
 
-// "2024-01-15T08:00:00" → "08:00"
-function toTimeStr(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleTimeString("es-MX", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-}
-
-const DAY_NAMES = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-function toDayName(iso: string): string {
-  return DAY_NAMES[new Date(iso).getDay()];
-}
 
 const DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
@@ -42,9 +29,9 @@ function buildGrid(entries: HorarioEntry[]): { grid: HorarioGrid; horas: string[
   const grid: HorarioGrid = {};
 
   for (const entry of entries) {
-    const day = toDayName(entry.inicio);
+    const day = entry.dia;
     if (!DIAS.includes(day)) continue;
-    const horaKey = `${toTimeStr(entry.inicio)}–${toTimeStr(entry.fin)}`;
+    const horaKey = `${entry.inicio}–${entry.fin}`;
     horasSet.add(horaKey);
     if (!grid[horaKey]) grid[horaKey] = {};
     grid[horaKey][day] = { materia: entry.materia.nombre };
