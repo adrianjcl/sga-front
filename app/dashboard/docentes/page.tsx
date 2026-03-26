@@ -432,9 +432,7 @@ export default function DocentesPage() {
                                         <li key={i} style={{ marginBottom: 4 }}>
                                           <strong>{h.materia.nombre}</strong>
                                           {" — "}
-                                          {h.inicio} {h.fin}
-                                          {" – "}
-                                          {h.dia}
+                                          {h.dia} {h.inicio} {" – "} {h.fin}
                                         </li>
                                       ))}
                                     </ul>

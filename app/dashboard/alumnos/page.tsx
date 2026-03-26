@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import {
   alumnoGet,
   alumnoGetByMatricula,
@@ -42,6 +43,7 @@ interface AlumnoDetail {
 }
 
 export default function AlumnosPage() {
+  const router = useRouter();
   const [alumnos, setAlumnos] = useState<Alumno[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -152,6 +154,12 @@ export default function AlumnosPage() {
           </p>
         </div>
         <div className="topbar-right">
+          <button
+            className="btn btn-outline btn-sm"
+            onClick={() => router.push("/dashboard/bajas")}
+          >
+            📋 Histórico de Bajas
+          </button>
           <button className="btn btn-outline btn-sm">⬇ Exportar</button>
           <button className="btn btn-primary btn-sm">+ Nuevo alumno</button>
         </div>
@@ -240,6 +248,15 @@ export default function AlumnosPage() {
                             onClick={() => handleViewDetail(a.matricula)}
                           >
                             👁️
+                          </button>
+                          <button
+                            className="action-btn"
+                            title="Editar alumno"
+                            onClick={() =>
+                              router.push(`/dashboard/alumno/${a.matricula}`)
+                            }
+                          >
+                            ✏️
                           </button>
                         </td>
                       </tr>
@@ -335,10 +352,7 @@ export default function AlumnosPage() {
                                       {selectedDetail.horario.map((h, i) => (
                                         <li key={i} style={{ marginBottom: 4 }}>
                                           <strong>{h.materia.nombre}</strong>
-                                          {" — "}
-                                          {h.inicio} {h.fin}
-                                          {" – "}
-                                          {h.dia}
+                                          {" — "} {h.dia} {h.inicio} {" – "} {h.fin}
                                         </li>
                                       ))}
                                     </ul>

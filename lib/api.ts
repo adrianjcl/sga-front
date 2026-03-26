@@ -60,6 +60,50 @@ export async function alumnoGetByMatricula(matricula: number) {
   return data;
 }
 
+export interface AlumnoExtended {
+  Matricula: number;
+  Nombre: string;
+  Genero: string;
+  ProgramaEducativo: string;
+  Grupo: string;
+  Turno: string;
+  Nivel: string;
+  Cuatrimestre: number;
+}
+
+export async function alumnoGetExtended(matricula: number) {
+  console.log("[API] alumno/get-extended/:matricula - called", matricula);
+  const { data } = await axios.get(API_URL + `/alumno/get-extended/${matricula}`, {
+    headers: authHeaders(),
+  });
+  return data;
+}
+
+// ─── 4S ───────────────────────────────────────────────────────────────────
+
+export interface BajasCreateBody {
+  matricula: number;
+  tipoDeBaja: "Baja Temporal" | "Baja Definitiva";
+  motivo: string;
+  comentarios?: string;
+}
+
+export async function bajasCreate(body: BajasCreateBody) {
+  console.log("[API] bajas/create - called", body.matricula);
+  const { data } = await axios.post(API_URL + "/bajas/create", body, {
+    headers: { ...authHeaders(), "Content-Type": "application/json" },
+  });
+  return data;
+}
+
+export async function bajasGetAll() {
+  console.log("[API] bajas/getall - called");
+  const { data } = await axios.get(API_URL + "/bajas/getall", {
+    headers: authHeaders(),
+  });
+  return data;
+}
+
 // ─── DOCENTE ─────────────────────────────────────────────────────────────────
 
 export interface DocenteCreateBody {
