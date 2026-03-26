@@ -43,7 +43,7 @@ export async function alumnoGetWarns() {
   return data;
 }
 
-export async function alumnoGet(query?: { nombre?: string; matricula?: string | number }) {
+export async function alumnoGet(query?: { q?: string }) {
   console.log("[API] alumno/get - called", query ?? "");
   const { data } = await axios.get(API_URL + "/alumno/get", {
     headers: authHeaders(),

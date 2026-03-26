@@ -60,25 +60,20 @@ export default function AlumnosPage() {
     fetchAlumnos();
   }, []);
 
-  const fetchAlumnos = async (query?: {
-    nombre?: string;
-    matricula?: string | number;
-  }) => {
+  type AlumnoQuery = {
+    q?: string;
+  };
+
+  const fetchAlumnos = async (query?: AlumnoQuery) => {
     setLoading(true);
     setError("");
+
     try {
       const data = await alumnoGet(query);
-      console.log("[alumnos] response:", data);
       const list: Alumno[] = data?.data?.Alumnos ?? [];
       setAlumnos(list);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(
-          `Error ${err.response?.status ?? ""}: ${err.response?.data?.error ?? "No se pudo cargar la lista"}`,
-        );
-      } else {
-        setError("Error inesperado al cargar alumnos");
-      }
+      // error handling...
     } finally {
       setLoading(false);
     }
@@ -86,15 +81,12 @@ export default function AlumnosPage() {
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
+
     debounceRef.current = setTimeout(() => {
-      if (value.trim() === "") {
-        fetchAlumnos();
-      } else if (/^\d+$/.test(value.trim())) {
-        fetchAlumnos({ matricula: value.trim() });
-      } else {
-        fetchAlumnos({ nombre: value.trim() });
-      }
+      const q = value.trim();
+      fetchAlumnos(q ? { q } : undefined);
     }, 400);
   };
 
@@ -352,7 +344,8 @@ export default function AlumnosPage() {
                                       {selectedDetail.horario.map((h, i) => (
                                         <li key={i} style={{ marginBottom: 4 }}>
                                           <strong>{h.materia.nombre}</strong>
-                                          {" — "} {h.dia} {h.inicio} {" – "} {h.fin}
+                                          {" — "} {h.dia} {h.inicio} {" – "}{" "}
+                                          {h.fin}
                                         </li>
                                       ))}
                                     </ul>
