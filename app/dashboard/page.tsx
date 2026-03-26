@@ -13,6 +13,7 @@ interface Carrera {
   id: number;
   nom: string;
   nombre: string;
+  count: number;
 }
 
 interface Alumno {
@@ -47,6 +48,14 @@ export default function DashboardPage() {
           docenteGet(),
           carreraGetAll(),
         ]);
+      
+      console.log("[dashboard] fetch results:", {
+        grupos: gruposRes.status === "fulfilled" ? gruposRes.value?.data : "error",
+        alumnos: alumnosRes.status === "fulfilled" ? alumnosRes.value?.data : "error",
+        warns: warnsRes.status === "fulfilled" ? warnsRes.value?.data : "error",
+        docentes: docentesRes.status === "fulfilled" ? docentesRes.value?.data : "error",
+        carreras: carrerasRes.status === "fulfilled" ? carrerasRes.value?.data : "error",
+      });
 
       if (gruposRes.status === "fulfilled") {
         const list = gruposRes.value?.data?.Grupos ?? [];
@@ -76,12 +85,7 @@ export default function DashboardPage() {
     }
   };
 
-  // Count alumnos per carrera for bar chart
-  const alumnosByCarrera = carreras.map((c) => ({
-    ...c,
-    count: alumnos.filter((a) => a.carrera === c.id).length,
-  }));
-  const maxCount = Math.max(...alumnosByCarrera.map((c) => c.count), 1);
+  const maxCount = Math.max(...carreras.map((c) => c.count), 1);
 
   // Count alumnos by estado for donut
   const activos = alumnos.filter((a) => a.estado === "Activo").length;
@@ -166,12 +170,12 @@ export default function DashboardPage() {
               <p style={{ fontSize: 12, color: "var(--gray-500)" }}>
                 Cargando...
               </p>
-            ) : alumnosByCarrera.length === 0 ? (
+            ) : carreras.length === 0 ? (
               <p style={{ fontSize: 12, color: "var(--gray-500)" }}>
                 Sin datos
               </p>
             ) : (
-              alumnosByCarrera.map((c) => (
+              carreras.map((c) => (
                 <div
                   key={c.id}
                   style={{

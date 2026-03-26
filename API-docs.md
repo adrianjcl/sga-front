@@ -153,6 +153,120 @@ Expected response:
 
 ---
 
+## /alumno/change-state/:matricula
+Method: PATCH
+
+Params:
+- `matricula` — integer, the student's ID number
+
+Body:
+```json
+{
+  "newState": "Baja Temporal"
+}
+```
+
+Valid `newState` values: `"Activo"` | `"Baja Temporal"` | `"Baja Definitiva"`
+
+Expected response:
+```json
+{
+  "result": "success",
+  "msg": "Juan state changed from Activo to Baja Temporal"
+}
+```
+
+---
+
+## /alumno/get-extended/:matricula
+Method: GET
+
+Params:
+- `matricula` — integer, the student's ID number
+
+Example: `/alumno/get-extended/12345`
+
+Expected response:
+```json
+{
+  "result": "success",
+  "msg": "Juan extended data retreived succesfully",
+  "data": {
+    "Matricula": 12345,
+    "Nombre": "Juan Perez",
+    "Genero": "Masculino",
+    "ProgramaEducativo": "Ingenieria en Sistemas Computacionales",
+    "Grupo": "1A",
+    "Turno": "Matutino",
+    "Nivel": "TSU",
+    "Cuatrimestre": 3
+  }
+}
+```
+
+---
+
+# BAJAS
+
+## /bajas/create
+Method: POST
+
+Body:
+```json
+{
+  "matricula": 12345,
+  "tipoDeBaja": "Baja Temporal",
+  "motivo": "Problemas personales"
+}
+```
+
+Valid `tipoDeBaja` values: `"Baja Temporal"` | `"Baja Definitiva"`
+
+Changes the alumno's `estado` to `tipoDeBaja` and creates a record in `historial_baja`.
+
+Expected response:
+```json
+{
+  "result": "success",
+  "msg": "Juan ha sido dado de Baja Temporal"
+}
+```
+
+---
+
+## /bajas/getall
+Method: GET
+
+Returns all records from `historial_baja` joined with their corresponding alumno data.
+
+Expected response:
+```json
+{
+  "result": "success",
+  "msg": "Succesfully retreive Bajas data",
+  "data": {
+    "Bajas": [
+      {
+        "No.": 1,
+        "Matricula": 12345,
+        "Nombre": "Juan Perez",
+        "Genero": "Masculino",
+        "ProgramaEducativo": "Ingenieria en Sistemas Computacionales",
+        "Grupo": "1A",
+        "Turno": "Matutino",
+        "Nivel": "TSU",
+        "Cuatrimestre": 3,
+        "TipoDeBaja": "Baja Temporal",
+        "Motivo": "Problemas personales",
+        "Comentarios": null
+      }
+    ]
+  }
+}
+```
+
+---
+
 # DOCENTE
 
 ## /docente/create
